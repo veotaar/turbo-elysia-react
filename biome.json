@@ -7,13 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": [
-			"**",
-			"!**/bun.lock",
-			"!**/routeTree.gen.ts",
-			"!!**/dist",
-			"!**/components/ui"
-		]
+		"includes": ["**", "!**/bun.lock", "!**/routeTree.gen.ts", "!!**/dist"]
 	},
 	"formatter": {
 		"enabled": true,

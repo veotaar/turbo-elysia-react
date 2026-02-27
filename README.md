@@ -1,135 +1,121 @@
-# Turborepo starter
+# turbo-elysia-react
 
-This Turborepo starter is maintained by the Turborepo core team.
+Example repo for setting up turborepo, elysia, drizzle-orm, better-auth, react (vite), tanstack router, shadcnui and tailwindcss.
 
-## Using this example
+Review and update your auth cofig (`apps/api/src/lib/auth.ts`) if you plan on using this. Check out [better-auth documentation](https://www.better-auth.com/docs) for more info.
 
-Run the following command:
+## Stack
 
-```sh
-npx create-turbo@latest
+**Monorepo**
+- [Turborepo](https://turborepo.dev/)
+
+**Backend** (`apps/api`)
+- [Elysia](https://elysiajs.com/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [Better Auth](https://www.better-auth.com/)
+
+**Frontend** (`apps/web`)
+- React + Vite
+- [TanStack Router](https://tanstack.com/router)
+- [TanStack Query](https://tanstack.com/query)
+- Tailwind CSS
+- [shadcn/ui](https://ui.shadcn.com/)
+- [@elysiajs/eden](https://elysiajs.com/eden/overview): end-to-end type-safe API client from Elysia
+
+**Tooling**
+- [Biome](https://biomejs.dev/): formatting and linting in one tool (replaces eslint+prettier)
+- Bun
+
+Also includes a `.vscode/settings.json` file with recommended settings from tanstack router.
+
+## Usage
+
+Bootstrap a new project with degit (no git history included):
+
+```bash
+bunx degit veotaar/turbo-elysia-react my-new-project
+
+cd my-new-project
+
+git init
 ```
 
-## What's inside?
+## Getting Started
 
-This Turborepo includes the following packages/apps:
+**1. Install dependencies**
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+bun install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+**2. Configure the API environment**
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+cp apps/api/.env.example apps/api/.env
 ```
 
-### Develop
+Then edit `apps/api/.env`:
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```env
+PORT=3000
+DATABASE_URL=postgres://postgres:password@localhost:5432/your_db
+BETTER_AUTH_SECRET=    # openssl rand -base64 32
+BETTER_AUTH_URL=http://localhost:3000
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+**3. Push the database schema**
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+cd apps/api
 ```
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
+```bash
+bunx --bun drizzle-kit generate
+bunx --bun drizzle-kit migrate
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+or
+```bash
+bunx --bun drizzle-kit push
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+**4. Start the development servers**
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```bash
+bun dev
 ```
 
-## Useful Links
+| App | URL |
+|-----|-----|
+| API | http://localhost:3000 |
+| API docs (OpenAPI) | http://localhost:3000/api/openapi |
+| Web | http://localhost:5173 |
 
-Learn more about the power of Turborepo:
+**5. You can use drizzle studio**
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+```bash
+cd apps/api
+```
+```bash
+bunx --bun drizzle-kit studio
+```
+go to https://local.drizzle.studio/ to use drizzle studio
+
+## Project Structure
+
+```
+apps/
+  api/        # Elysia backend
+  web/        # React frontend
+packages/
+  typescript-config/   # Shared TS configs
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `bun dev` | Run all apps in development mode |
+| `bun build` | Build all apps |
+| `bun check-types` | Type-check all packages |
+| `bun format-and-lint` | Check formatting and linting |
+| `bun format-and-lint:fix` | Auto-fix formatting and linting issues |

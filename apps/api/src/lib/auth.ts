@@ -8,7 +8,7 @@ import { admin, openAPI } from "better-auth/plugins";
 export const auth = betterAuth({
 	appName: "App Name",
 	basePath: "/api/auth",
-	trustedOrigins: ["http://localhost:3000", "http://localhost:3001"],
+	trustedOrigins: ["http://localhost:3000", "http://localhost:5173"],
 	database: drizzleAdapter(db, {
 		provider: "pg",
 		schema: {
@@ -38,8 +38,12 @@ export const auth = betterAuth({
 	},
 	user: {
 		additionalFields: {
-			encryptionSalt: { type: "string", required: true },
-			wrappedMasterKey: { type: "string", required: true },
+			role: {
+				type: "string",
+				required: false,
+				defaultValue: "user",
+				input: false,
+			},
 		},
 	},
 	advanced: {
